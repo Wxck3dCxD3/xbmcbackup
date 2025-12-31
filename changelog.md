@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Fixed
 
 - fixed a bug with the GUI settings restore, the settings key was not identified properly. Thanks @alexhass
+- implemented [suggested fix](https://kodi.wiki/view/Python_Problems#datetime.strptime) for strptime Python bug
 
 ## [Version 1.7.1](https://github.com/robweber/xbmcbackup/compare/matrix-1.7.0...robweber:matrix-1.7.1)
 
