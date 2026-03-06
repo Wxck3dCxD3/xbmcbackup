@@ -15,13 +15,9 @@ except ImportError:
     pass
 
 # fix for datetime.strptime bug https://kodi.wiki/view/Python_Problems#datetime.strptime
-class proxydt(datetime.datetime):
+def patch_strptime(date_string, format):
+    return datetime.datetime(*(time.strptime(date_string, format)[:6]))
 
-    @classmethod
-    def strptime(cls, date_string, format):
-        return datetime.datetime(*(time.strptime(date_string, format)[:6]))
-
-datetime.datetime = proxydt
 
 class QRCode(xbmcgui.WindowXMLDialog):
     def __init__(self, *args, **kwargs):
@@ -154,7 +150,7 @@ class DropboxAuthorizer:
             if(token.strip() != ""):
                 result = json.loads(token)
                 # convert expiration back to a datetime object
-                result['expiration'] = datetime.datetime.strptime(result['expiration'], "%Y-%m-%d %H:%M:%S.%f")
+                result['expiration'] = patch_strptime(result['expiration'], "%Y-%m-%d %H:%M:%S.%f")
 
             token_file.close()
 
