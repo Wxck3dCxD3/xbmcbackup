@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [Version 1.7.3~beta1]
+
+### Fixed
+
+- fixed issue with Scheduler running in a loop (#251). Issue stemmed from previous strptime fix affecting correct calculation of cron values
+
+### Changed
+
+- changed previous strptime bug fix by applying specific patch to authorizers file where this bug was initially seen
+
 ## [Version 1.7.2](https://github.com/robweber/xbmcbackup/compare/matrix-1.7.1...robweber:matrix-1.7.2)
 
 ### Fixed
