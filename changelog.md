@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [Version 1.7.3~beta1]
+## [Version 1.7.3](https://github.com/robweber/xbmcbackup/compare/matrix-1.7.1...robweber:matrix-1.7.3)
 
 ### Fixed
 
