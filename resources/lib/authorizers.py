@@ -135,24 +135,21 @@ class DropboxAuthorizer:
 
     def _setToken(self, token):
         # write the token files
-        token_file = open(xbmcvfs.translatePath(utils.data_dir() + self.TOKEN_FILE), 'w')
-
-        token_file.write(json.dumps({"access_token": token.access_token, "refresh_token": token.refresh_token, "expiration": str(token.expires_at)}))
-        token_file.close()
+        with open(xbmcvfs.translatePath(utils.data_dir() + self.TOKEN_FILE), 'w') as token_file:
+            token_file.write(json.dumps({"access_token": token.access_token, "refresh_token": token.refresh_token, "expiration": str(token.expires_at)}))
 
     def _getToken(self):
         result = {}
         # get token, if it exists
         if(xbmcvfs.exists(xbmcvfs.translatePath(utils.data_dir() + self.TOKEN_FILE))):
-            token_file = open(xbmcvfs.translatePath(utils.data_dir() + self.TOKEN_FILE))
-            token = token_file.read()
+            token = ""
+            with open(xbmcvfs.translatePath(utils.data_dir() + self.TOKEN_FILE), 'r') as token_file:
+                token = token_file.read()
 
             if(token.strip() != ""):
                 result = json.loads(token)
                 # convert expiration back to a datetime object
                 result['expiration'] = patch_strptime(result['expiration'], "%Y-%m-%d %H:%M:%S.%f")
-
-            token_file.close()
 
         return result
 
