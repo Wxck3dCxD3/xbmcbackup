@@ -4,10 +4,15 @@ import os.path
 import sys
 import xbmcvfs
 import xbmcgui
-from dropbox import dropbox
 from . import utils as utils
-from dropbox.files import WriteMode, CommitInfo, UploadSessionCursor
 from . authorizers import DropboxAuthorizer
+
+# don't die on import error — dropbox module may not be installed
+try:
+    from dropbox import dropbox
+    from dropbox.files import WriteMode, CommitInfo, UploadSessionCursor
+except ImportError:
+    pass
 
 
 class Vfs:
@@ -211,7 +216,7 @@ class DropboxFileSystem(Vfs):
                 self.client.files_get_metadata(aFile)
                 # if we make it here the file does exist
                 return True
-            except:
+            except Exception:
                 return False
         else:
             return False

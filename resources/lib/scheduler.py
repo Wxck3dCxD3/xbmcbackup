@@ -157,7 +157,7 @@ class BackupScheduler:
         cron_exp = utils.getSetting("cron_schedule")
 
         hour_of_day = utils.getSetting("schedule_time")
-        hour_of_day = int(hour_of_day[0:2])
+        hour_of_day = int(hour_of_day.split(':')[0])
         if(schedule_type == 0 or schedule_type == 1):
             # every day
             cron_exp = "0 " + str(hour_of_day) + " * * *"

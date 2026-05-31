@@ -1,13 +1,17 @@
 import xbmcgui
 import xbmcvfs
 import json
-import pyqrcode
 import time
-import resources.lib.tinyurl as tinyurl
 import resources.lib.utils as utils
 import datetime
 
-# don't die on import error yet, these might not even get used
+# don't die on import error — these modules may not be installed
+try:
+    import pyqrcode
+    import resources.lib.tinyurl as tinyurl
+except ImportError:
+    pass
+
 try:
     from dropbox import dropbox
     from dropbox import oauth
@@ -126,7 +130,7 @@ class DropboxAuthorizer:
                                      oauth2_access_token_expiration=user_token['expiration'], app_key=self.APP_KEY, app_secret=self.APP_SECRET)
             try:
                 result.users_get_current_account()
-            except:
+            except Exception:
                 # this didn't work, delete the token file
                 self._deleteToken()
                 result = None

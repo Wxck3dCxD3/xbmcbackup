@@ -111,6 +111,12 @@ class XbmcBackup:
         self.skip_advanced = True
 
     def backup(self, progressOverride=False):
+        # pre-flight: verify destination is reachable before showing any UI
+        if(not self.remote_vfs.exists(self.remote_base_path)):
+            if(not self.remote_vfs.mkdir(self.remote_base_path)):
+                xbmcgui.Dialog().ok(utils.getString(30089), "%s\n%s" % (utils.getString(30090), utils.getString(30044)))
+                return
+
         shouldContinue = self._setupVFS(self.Backup, progressOverride)
 
         if(shouldContinue):
@@ -156,7 +162,8 @@ class XbmcBackup:
             writeCheck = self._createValidationFile(allFiles)
 
             if(not writeCheck):
-                # cannot write validation file — backup would be invisible to restore, so abort
+                # close progress bar before showing error so they don't overlap
+                self._closeVFS()
                 xbmcgui.Dialog().ok(utils.getString(30089), "%s\n%s" % (utils.getString(30090), utils.getString(30044)))
                 return
 
@@ -519,7 +526,6 @@ class XbmcBackup:
 
         vFile = xbmcvfs.File(xbmcvfs.translatePath(utils.data_dir() + "xbmcbackup.val"), 'w')
         vFile.write(json.dumps(valInfo))
-        vFile.write("")
         vFile.close()
 
         success = self._copyFile(self.xbmc_vfs, self.remote_vfs, xbmcvfs.translatePath(utils.data_dir() + "xbmcbackup.val"), self.remote_vfs.root_path + "xbmcbackup.val")
@@ -607,7 +613,7 @@ class FileManager:
                 # create all the subdirs first
                 for aDir in dirs:
                     dirPath = xbmcvfs.validatePath(xbmcvfs.translatePath(directory + self.pathSep + aDir))
-                    file_ext = aDir.split('.')[-1]
+                    file_ext = '.' + aDir.split('.')[-1]
 
                     # check if directory is excluded
                     if(not any(dirPath.startswith(exDir) for exDir in self.exclude_dir)):
@@ -615,11 +621,7 @@ class FileManager:
                         self.addFile(dirPath, True)
 
                         # catch for "non directory" type files
-                        shouldWalk = True
-
-                        for s in file_ext:
-                            if(s in self.not_dir):
-                                shouldWalk = False
+                        shouldWalk = file_ext not in self.not_dir
 
                         if(shouldWalk):
                             self.walkTree(dirPath)
